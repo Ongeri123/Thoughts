@@ -1,0 +1,43 @@
+body{
+    display: flex;
+
+}
+#blog-container1{
+    background-color: blue;
+}
+.blog-container1{
+    background-color: rgb(192, 188, 188);
+    border-radius: 5px;
+    width: 500px;
+}
+.new-post-container{
+    margin-top: 40px;
+   background-color: gray;
+    border-radius: 5px;
+    width: 500px; 
+    border : '2px dashed blue';
+    height :200px;
+    margin-Top : '20px';
+
+}
+.pulse-tab{
+    margin-top: 25px;
+   background-color: gray;
+    border-radius: 5px;
+    width: 500px; 
+    border : 2px;
+    height :fit-content;
+    margin-left: 450px;
+    
+}
+.new-post-form{
+  display: none;  
+}
+
+.clickable-post{
+   height: fit-content;
+}
+.clickable-post:hover{
+     border: 0.5px solid rgb(71, 68, 68);
+     border-radius: 5px;
+}
