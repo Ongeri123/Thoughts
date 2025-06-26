@@ -36,6 +36,9 @@ container2.appendChild(showFormBtn)
 let form = document.createElement('form');
 form.className = 'new-post-form';
 
+//create a div to add all form elements inside
+let formContainer = document.createElement('div');
+formContainer.className = 'form-container';
 
 // Create input fields
 let titleInput = document.createElement('input');
@@ -58,29 +61,41 @@ contentInput.placeholder = 'Write your blog post here...';
 contentInput.required = true;
 
 let submitBtn = document.createElement('button');
+submitBtn.className = 'submit-Btn';
 submitBtn.type = 'submit';
-submitBtn.textContent = 'Add Post';
+submitBtn.textContent = '+ Add Post';
 
 let cancelBtn = document.createElement('button');
-cancelBtn.type = 'submit';
+cancelBtn.className = 'cancel-Btn';
+cancelBtn.type = 'button';
 cancelBtn.textContent = 'Cancel';
 
-form.append(titleInput, authorInput, imageUrlInput, contentInput, submitBtn, cancelBtn);
+formContainer.append(titleInput, authorInput, imageUrlInput, contentInput);
+form.append(formContainer, submitBtn, cancelBtn);
 
 
 container2.appendChild(showFormBtn);
 container2.appendChild(form);
 
+form.style.display = 'none';
+
+
 // adding function to create new post function
 
 
-showFormBtn.addEventListener('click', function() {
-  if (form.style.display === 'none') {
-    form.style.display = 'block';
-  } else {
-    form.style.display = 'none';
-  }
+showFormBtn.addEventListener('click', function () {
+  form.style.display = 'block';
+  showFormBtn.style.display = 'none';
 });
+
+cancelBtn.addEventListener('click', function () {
+  form.reset();
+  form.style.display = 'none';
+  showFormBtn.style.display = 'inline-block';
+});
+
+
+
 
 
 // adding functionality to the create new post button
@@ -118,33 +133,28 @@ form.addEventListener('submit', function(event) {
     postContent.textContent = content;
 
     // Append all to post
-      newPost.append(postTitle, postAuthor, postImage, postContent);
+    newPost.append(postTitle, postAuthor,);
       
-      let postCard = document.createElement('div');
-      postCard.className = 'clickable-post';
+    let postCard = document.createElement('div');
+    postCard.className = 'clickable-post';
 
-      postCard.append(postTitle, postAuthor, postImage, postContent);
-      newPost.appendChild(postCard); // newPost is your <li>
+    postCard.append(postTitle, postAuthor);
+    newPost.appendChild(postCard); // newPost is your <li>
 
-      postCard.addEventListener('click', function () {
+    postCard.addEventListener('click', function () {
       displayPostInContainer3(title, author, imageUrl, content);
-     });
+    });
 
     // Append new post to list
-      list.insertBefore(newPost, list.children[1]);
+    list.insertBefore(newPost, list.children[1]);
 
 
     // Reset form and hide it
     form.reset();
     form.style.display = 'none';
-  } else {
-    alert('Please fill in all fields.');
+    showFormBtn.style.display = 'inline-block';
   }
    
-    newPost.addEventListener('click', function () {
-  displayPostInContainer3(title, author, imageUrl, content);
-});
-
 });
 
 
