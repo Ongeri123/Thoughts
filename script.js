@@ -1,13 +1,13 @@
 
 const url = "http://localhost:3000/Posts";
 
-// === Header ===
+// creating a top header
 const topHeader = document.createElement('header');
 topHeader.className = 'site-header';
 topHeader.innerHTML = '<h1>Thoughts</h1>';
 document.body.prepend(topHeader);
 
-// === Blog Post List ===
+// Blog Post List 
 const container1 = document.createElement('div');
 container1.className = 'blog-container1';
 
@@ -19,7 +19,7 @@ heading1.textContent = 'Blog Post';
 list.appendChild(heading1);
 container1.appendChild(list);
 
-// === New Post Form ===
+// New Post Form 
 const container2 = document.createElement('div');
 container2.className = 'new-post-container';
 
@@ -70,7 +70,7 @@ form.append(formContainer, submitBtn, cancelBtn);
 container2.appendChild(form);
 form.style.display = 'none';
 
-// === Form Interactivity ===
+//  Form Interactivity 
 let isEditing = false;
 let editingPostId = null;
 
@@ -114,7 +114,7 @@ form.onsubmit = (e) => {
 
 };
 
-// === Post Pulse Section ===
+// Post Pulse Section 
 const container3 = document.createElement('div');
 container3.className = 'pulse-tab';
 
@@ -166,7 +166,7 @@ function displayPostInContainer3(post) {
   container3.append(title, author, image, content, editBtn, deleteBtn);
 }
 
-// === Layout Assembly ===
+// having main div to append the content and easy for layout assembling 
 const majorContainer = document.createElement('div');
 majorContainer.className = 'major-container';
 majorContainer.append(container1, container2);
@@ -176,7 +176,7 @@ main.className = 'main-content';
 main.append(majorContainer, container3);
 document.body.appendChild(main);
 
-// === Fetch and Render Posts ===
+// Fetch and Render Posts 
 fetch(url)
   .then(res => res.json())
   .then(posts => {
