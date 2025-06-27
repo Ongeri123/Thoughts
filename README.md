@@ -1,26 +1,27 @@
 # THOUGHTS
 This project is a simple frontend blog manager app that interacts with a mock API. You can view, add, edit, and delete blog posts.
 
-# 🛠️ Setup Instructions
-Create your project structure.
-Install JSON Server (mock API).
-Add sample data to db.json.
-Start the backend.
-Use live-server to serve the frontend.
+##🛠️ Setup Instructions
+
+1. Create your project structure.
+2. Install JSON Server (mock API).
+3. Add sample data to db.json.
+4. Start the backend.
+5. Use live-server to serve the frontend.
 
 
-#📡 API Endpoints
-Base URL: http://localhost:3000
+#📡 API Endpoints;
+1. Base URL: http://localhost:3000
 
-GET /posts – Get all blog posts.
+2. GET /posts – Get all blog posts.
 
-GET /posts/:id – Get a single post by ID.
+3. GET /posts/:id – Get a single post by ID.
 
-POST /posts – Create a new post.
+4. POST /posts – Create a new post.
 
-PATCH /posts/:id – Update a post.
+5. PATCH /posts/:id – Update a post.
 
-DELETE /posts/:id – Delete a post.
+6. DELETE /posts/:id – Delete a post.
 
 
 # ✅ Core Deliverables
