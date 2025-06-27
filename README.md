@@ -1,7 +1,7 @@
 # THOUGHTS
 This project is a simple frontend blog manager app that interacts with a mock API. You can view, add, edit, and delete blog posts.
 
-# 🛠️ Setup
+# 🛠️ Setup Instructions
 Create your project structure:
 Install JSON Server (mock API):
 Add sample data to db.json:
