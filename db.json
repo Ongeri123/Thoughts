@@ -1,46 +1,21 @@
 {
-  "posts": [
+  "Posts": [
     {
-      "id": 1,
-      "title": "Mastering JavaScript Array Methods",
-      "content": "Discover how to use slice, splice, and copyWithin for powerful array manipulation.",
-      "authorId": 1,
-      "date": "2025-06-24T08:00:00Z"
+      "id":1,
+      "title": "Music",
+      "author": "Newton",
+      "imageUrl": "https://i.pinimg.com/736x/fc/74/f6/fc74f67b644ab5cdffc5cce7e67f99a7.jpg",
+      "content": "Music is medicine",
+      "date": "2025-06-27",
+      "id": 1
     },
     {
-      "id": 2,
-      "title": "Why Git Workflows Matter",
-      "content": "Explore how structured commits and branches can save your future self loads of pain.",
-      "authorId": 2,
-      "date": "2025-06-23T15:30:00Z"
-    }
-  ],
-  "authors": [
-    {
-      "id": 1,
-      "name": "Newton",
-      "bio": "JavaScript enthusiast with a knack for teaching code through real-world examples."
-    },
-    {
-      "id": 2,
-      "name": "Zuri Dev",
-      "bio": "Frontend developer who lives for Git merges and clean commits."
-    }
-  ],
-  "comments": [
-    {
-      "id": 1,
-      "postId": 1,
-      "author": "Elaine",
-      "content": "This really helped clarify when to use slice vs splice. Thanks!",
-      "date": "2025-06-24T10:15:00Z"
-    },
-    {
-      "id": 2,
-      "postId": 2,
-      "author": "Kip",
-      "content": "Can you explain how to handle merge conflicts next?",
-      "date": "2025-06-24T11:00:00Z"
+      "title": "Sports",
+      "author": "Newton",
+      "imageUrl": "https://i.pinimg.com/736x/39/4a/85/394a8514c21be4c0fc80e3d2a9879019.jpg",
+      "content": "Sports is good for someone who needs to achieve good body posture",
+      "date": "2025-06-27",
+      "id": 2
     }
   ]
 }

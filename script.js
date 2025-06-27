@@ -1,5 +1,5 @@
  
-
+let url = "http://localhost:3000/Posts";
 //creating a div element to contain the blog post created.
 let container1 = document.createElement('div');
 container1.className = 'blog-container1';
@@ -153,6 +153,29 @@ form.addEventListener('submit', function(event) {
     form.reset();
     form.style.display = 'none';
     showFormBtn.style.display = 'inline-block';
+
+    fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+  },
+      body: JSON.stringify({
+    id: newId,
+    title,
+    author,
+    imageUrl,
+    content,
+    date: new Date().toISOString().split('T')[0] // optional date field
+  })
+})
+.then(res => res.json())
+.then(savedPost => {
+  console.log('Post saved:', savedPost);
+})
+.catch(error => {
+  console.error('Error saving post:', error);
+});
+
   }
    
 });
@@ -172,6 +195,20 @@ let heading3 = document.createElement('h2');
 heading3.className = 'Post-Pulse';
 heading3.textContent = 'Post Pulse';
 container3.appendChild(heading3);
+
+// Edit Button
+let editBtn = document.createElement('button');
+editBtn.textContent = 'Edit';
+editBtn.className = 'edit-btn';
+
+// Delete Button
+let deleteBtn = document.createElement('button');
+deleteBtn.textContent = 'Delete';
+deleteBtn.className = 'delete-btn';
+
+// Add buttons to the container
+container3.append(editBtn, deleteBtn);
+
 
 
 let majorContainer = document.createElement('div');
@@ -204,6 +241,71 @@ function displayPostInContainer3(title, author, imageUrl, content) {
 
   // Append all to the pulse container
   container3.append(postTitle, postAuthor, postImage, postContent);
+
+  editBtn.addEventListener('click', function () {
+  // Prefill the form with post data
+  titleInput.value = title;
+  authorInput.value = author;
+  imageUrlInput.value = imageUrl;
+  contentInput.value = content;
+
+  // Show form for editing
+  form.style.display = 'block';
+  showFormBtn.style.display = 'none';
+
+  // Remove previous submit listener temporarily
+  const oldSubmit = form.onsubmit;
+  form.onsubmit = function (e) {
+    e.preventDefault();
+
+    fetch(`${url}/${post.id}`)
+      .then(res => res.json())
+      .then(posts => {
+        const post = posts[0]; // assume title is unique
+        if (post) {
+          fetch(`${url}/${post.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: titleInput.value,
+              author: authorInput.value,
+              imageUrl: imageUrlInput.value,
+              content: contentInput.value
+            })
+          })
+          .then(res => res.json())
+          .then(updated => {
+            console.log('Post updated:', updated);
+            location.reload(); // refresh the view
+          });
+        }
+      });
+
+    form.reset();
+    form.style.display = 'none';
+    showFormBtn.style.display = 'inline-block';
+    form.onsubmit = oldSubmit; // restore the original submit behavior
+  };
+  });
+
+  deleteBtn.addEventListener('click', function () {
+  fetch(`${url}?title=${encodeURIComponent(title)}`)
+    .then(res => res.json())
+    .then(posts => {
+      const post = posts[0];
+      if (post) {
+        fetch(`${url}/${post.id}`, {
+          method: 'DELETE'
+        })
+        .then(() => {
+          console.log('Post deleted');
+          location.reload();
+        });
+      }
+    });
+});
+
+
 }
 
 
@@ -213,3 +315,34 @@ majorContainer.appendChild(container2);
 
 document.body.appendChild(majorContainer);
 document.body.appendChild(container3);
+
+// Fetch and render existing posts from the backend
+fetch(url)
+  .then(res => res.json())
+  .then(posts => {
+    posts.forEach((post, index) => {
+      let listItem = document.createElement('li');
+      listItem.className = 'blog-post';
+
+      let postTitle = document.createElement('h3');
+      postTitle.textContent = post.title;
+
+      let postAuthor = document.createElement('small');
+      postAuthor.textContent = 'By ' + post.author;
+
+      let postCard = document.createElement('div');
+      postCard.className = 'clickable-post';
+      postCard.append(postTitle, postAuthor);
+      listItem.appendChild(postCard);
+
+      postCard.addEventListener('click', function () {
+        displayPostInContainer3(post.title, post.author, post.imageUrl, post.content);
+      });
+
+      list.appendChild(listItem);
+    });
+  })
+  .catch(error => {
+    console.error("Error fetching posts:", error);
+  });
+
