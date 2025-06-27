@@ -1,20 +1,47 @@
+/* General Reset & Body */
 body {
-  display: grid;
-  grid-template-columns: 2fr 1fr; /* Blog takes 2 parts, Pulse takes 1 part */
-  gap: 30px;
-  align-items: start;
   margin: 0;
+  padding: 0;
+  height: 100vh;
+  background-color: rgb(94, 9, 9);
+  
+}
+
+/* Site Header */
+.site-header {
+  background-color: orange;
   padding: 20px;
-  background-color: #f9f9f9;
+  text-align: start;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
+.site-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 600;
+}
 
+/* Main Grid Layout */
+.main-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 60px;
+  max-width: 1200px;
+  max-height: 100px;
+  margin: 40px ;
+  padding: 0 20px;
+  align-items: start;
+}
+
+/* Left Side: Blog and Form */
 .major-container {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
-
-
+/* Cards */
 .blog-container1,
 .new-post-container,
 .pulse-tab {
@@ -24,6 +51,8 @@ body {
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
+
+/* Headings */
 .heading-1,
 .add-post,
 .Post-Pulse {
@@ -31,9 +60,12 @@ body {
   color: #444;
 }
 
+/* Buttons */
 .toggle-form-btn,
 .submit-Btn,
-.cancel-Btn {
+.cancel-Btn,
+.edit-btn,
+.delete-btn {
   padding: 10px 15px;
   margin-top: 10px;
   margin-right: 10px;
@@ -48,12 +80,24 @@ body {
   background-color: #999;
 }
 
+.edit-btn {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.delete-btn {
+  background-color: #f44336;
+}
+
 .toggle-form-btn:hover,
 .submit-Btn:hover,
-.cancel-Btn:hover {
+.cancel-Btn:hover,
+.edit-btn:hover,
+.delete-btn:hover {
   background-color: #005a99;
 }
 
+/* Form Inputs */
 .form-container input,
 .form-container textarea {
   width: 100%;
@@ -68,6 +112,7 @@ textarea {
   resize: vertical;
 }
 
+/* Blog List Items */
 .blog-post {
   list-style: none;
   margin-bottom: 20px;

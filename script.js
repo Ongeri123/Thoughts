@@ -1,348 +1,201 @@
- 
-let url = "http://localhost:3000/Posts";
-//creating a div element to contain the blog post created.
-let container1 = document.createElement('div');
+
+const url = "http://localhost:3000/Posts";
+
+// === Header ===
+const topHeader = document.createElement('header');
+topHeader.className = 'site-header';
+topHeader.innerHTML = '<h1>Thoughts</h1>';
+document.body.prepend(topHeader);
+
+// === Blog Post List ===
+const container1 = document.createElement('div');
 container1.className = 'blog-container1';
 
-//creating unordered list inside container1
-let list = document.createElement('ol');
-
-//adding list to the blog container
-container1.appendChild(list);
-
-let heading1 = document.createElement('h1');
+const list = document.createElement('ol');
+const heading1 = document.createElement('h1');
 heading1.className = 'heading-1';
 heading1.textContent = 'Blog Post';
 
 list.appendChild(heading1);
+container1.appendChild(list);
 
-
-//creating a div element to contain the form to create a blog.
-
-let container2 = document.createElement('div')
+// === New Post Form ===
+const container2 = document.createElement('div');
 container2.className = 'new-post-container';
 
-let heading2 = document.createElement('h2');
+const heading2 = document.createElement('h2');
 heading2.className = 'add-post';
 heading2.textContent = '+ Add New Post';
 container2.appendChild(heading2);
 
-let showFormBtn = document.createElement('button');
+const showFormBtn = document.createElement('button');
 showFormBtn.textContent = 'Create New Post';
 showFormBtn.className = 'toggle-form-btn';
+container2.appendChild(showFormBtn);
 
-container2.appendChild(showFormBtn)
-
-let form = document.createElement('form');
+const form = document.createElement('form');
 form.className = 'new-post-form';
 
-//create a div to add all form elements inside
-let formContainer = document.createElement('div');
+const formContainer = document.createElement('div');
 formContainer.className = 'form-container';
 
-// Create input fields
-let titleInput = document.createElement('input');
-titleInput.type = 'text';
+const titleInput = document.createElement('input');
 titleInput.placeholder = 'Post Title';
 titleInput.required = true;
 
-let authorInput = document.createElement('input');
-authorInput.type = 'text';
+const authorInput = document.createElement('input');
 authorInput.placeholder = 'Author Name';
 authorInput.required = true;
 
-let imageUrlInput = document.createElement('input');
-imageUrlInput.type = 'text';
-imageUrlInput.placeholder = 'Image Url';
+const imageUrlInput = document.createElement('input');
+imageUrlInput.placeholder = 'Image URL';
 imageUrlInput.required = true;
 
-let contentInput = document.createElement('textarea');
+const contentInput = document.createElement('textarea');
 contentInput.placeholder = 'Write your blog post here...';
 contentInput.required = true;
 
-let submitBtn = document.createElement('button');
+const submitBtn = document.createElement('button');
+submitBtn.textContent = '+ Add Post';
 submitBtn.className = 'submit-Btn';
 submitBtn.type = 'submit';
-submitBtn.textContent = '+ Add Post';
 
-let cancelBtn = document.createElement('button');
+const cancelBtn = document.createElement('button');
+cancelBtn.textContent = 'Cancel';
 cancelBtn.className = 'cancel-Btn';
 cancelBtn.type = 'button';
-cancelBtn.textContent = 'Cancel';
 
 formContainer.append(titleInput, authorInput, imageUrlInput, contentInput);
 form.append(formContainer, submitBtn, cancelBtn);
-
-
-container2.appendChild(showFormBtn);
 container2.appendChild(form);
-
 form.style.display = 'none';
 
+// === Form Interactivity ===
+let isEditing = false;
+let editingPostId = null;
 
-// adding function to create new post function
-
-
-showFormBtn.addEventListener('click', function () {
+showFormBtn.onclick = () => {
   form.style.display = 'block';
   showFormBtn.style.display = 'none';
-});
+};
 
-cancelBtn.addEventListener('click', function () {
+cancelBtn.onclick = () => {
   form.reset();
   form.style.display = 'none';
   showFormBtn.style.display = 'inline-block';
-});
+  isEditing = false;
+  editingPostId = null;
+};
 
+form.onsubmit = (e) => {
+  e.preventDefault();
+  const postData = {
+    title: titleInput.value.trim(),
+    author: authorInput.value.trim(),
+    imageUrl: imageUrlInput.value.trim(),
+    content: contentInput.value.trim(),
+    date: new Date().toISOString().split('T')[0]
+  };
+  if (!postData.title || !postData.author || !postData.imageUrl || !postData.content) return;
 
-
-
-
-// adding functionality to the create new post button
-
-form.addEventListener('submit', function(event) {
-  event.preventDefault(); // stop page reload
-
-  // Get input values
-  let title = titleInput.value.trim();
-  let author = authorInput.value.trim();
-  let imageUrl = imageUrlInput.value.trim();
-  let content = contentInput.value.trim();
-
-  if (title && author && imageUrl && content) {
-    // Create list item
-    let newPost = document.createElement('li');
-    newPost.className = 'blog-post';
-
-    // Title
-    let postTitle = document.createElement('h3');
-    postTitle.textContent = title;
-
-    // Author
-    let postAuthor = document.createElement('small');
-    postAuthor.textContent = 'By ' + author;
-
-    // Image
-    let postImage = document.createElement('img');
-    postImage.src = imageUrl;
-    postImage.alt = title;
-    postImage.style.maxWidth = '100%';
-
-    // Content
-    let postContent = document.createElement('p');
-    postContent.textContent = content;
-
-    // Append all to post
-    newPost.append(postTitle, postAuthor,);
-      
-    let postCard = document.createElement('div');
-    postCard.className = 'clickable-post';
-
-    postCard.append(postTitle, postAuthor);
-    newPost.appendChild(postCard); // newPost is your <li>
-
-    postCard.addEventListener('click', function () {
-      displayPostInContainer3(title, author, imageUrl, content);
-    });
-
-    // Append new post to list
-    list.insertBefore(newPost, list.children[1]);
-
-
-    // Reset form and hide it
-    form.reset();
-    form.style.display = 'none';
-    showFormBtn.style.display = 'inline-block';
-
+  if (isEditing && editingPostId) {
+    fetch(`${url}/${editingPostId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(postData)
+    }).then(() => location.reload());
+  } else {
     fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-  },
-      body: JSON.stringify({
-    id: newId,
-    title,
-    author,
-    imageUrl,
-    content,
-    date: new Date().toISOString().split('T')[0] // optional date field
-  })
-})
-.then(res => res.json())
-.then(savedPost => {
-  console.log('Post saved:', savedPost);
-})
-.catch(error => {
-  console.error('Error saving post:', error);
-});
-
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...postData, id: Date.now() })
+    }).then(() => location.reload());
   }
-   
-});
 
+};
 
-
-
-
-
-
-// document.body.appendChild(container2);
-
-let container3 = document.createElement('div');
+// === Post Pulse Section ===
+const container3 = document.createElement('div');
 container3.className = 'pulse-tab';
 
-let heading3 = document.createElement('h2');
+const heading3 = document.createElement('h2');
 heading3.className = 'Post-Pulse';
 heading3.textContent = 'Post Pulse';
 container3.appendChild(heading3);
 
-// Edit Button
-let editBtn = document.createElement('button');
-editBtn.textContent = 'Edit';
-editBtn.className = 'edit-btn';
-
-// Delete Button
-let deleteBtn = document.createElement('button');
-deleteBtn.textContent = 'Delete';
-deleteBtn.className = 'delete-btn';
-
-// Add buttons to the container
-container3.append(editBtn, deleteBtn);
-
-
-
-let majorContainer = document.createElement('div');
-majorContainer.className = 'major-container';
-
-function displayPostInContainer3(title, author, imageUrl, content) {
-  // Clear the existing contents of container3
+function displayPostInContainer3(post) {
   container3.innerHTML = '';
+  container3.appendChild(heading3);
 
-  // Re-insert the section heading
-  let heading = document.createElement('h2');
-  heading.textContent = 'Post Pulse';
-  heading.className = 'Post-Pulse';
-  container3.appendChild(heading);
+  const title = document.createElement('h3');
+  title.textContent = post.title;
 
-  // Build out the selected post
-  let postTitle = document.createElement('h3');
-  postTitle.textContent = title;
+  const author = document.createElement('small');
+  author.textContent = 'By ' + post.author;
 
-  let postAuthor = document.createElement('small');
-  postAuthor.textContent = 'By ' + author;
+  const image = document.createElement('img');
+  image.src = post.imageUrl;
+  image.alt = post.title;
 
-  let postImage = document.createElement('img');
-  postImage.src = imageUrl;
-  postImage.alt = title;
-  postImage.style.maxWidth = '100%';
+  const content = document.createElement('p');
+  content.textContent = post.content;
 
-  let postContent = document.createElement('p');
-  postContent.textContent = content;
+  const editBtn = document.createElement('button');
+  editBtn.textContent = 'Edit';
+  editBtn.className = 'edit-btn';
 
-  // Append all to the pulse container
-  container3.append(postTitle, postAuthor, postImage, postContent);
+  const deleteBtn = document.createElement('button');
+  deleteBtn.textContent = 'Delete';
+  deleteBtn.className = 'delete-btn';
 
-  editBtn.addEventListener('click', function () {
-  // Prefill the form with post data
-  titleInput.value = title;
-  authorInput.value = author;
-  imageUrlInput.value = imageUrl;
-  contentInput.value = content;
-
-  // Show form for editing
-  form.style.display = 'block';
-  showFormBtn.style.display = 'none';
-
-  // Remove previous submit listener temporarily
-  const oldSubmit = form.onsubmit;
-  form.onsubmit = function (e) {
-    e.preventDefault();
-
-    fetch(`${url}/${post.id}`)
-      .then(res => res.json())
-      .then(posts => {
-        const post = posts[0]; // assume title is unique
-        if (post) {
-          fetch(`${url}/${post.id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              title: titleInput.value,
-              author: authorInput.value,
-              imageUrl: imageUrlInput.value,
-              content: contentInput.value
-            })
-          })
-          .then(res => res.json())
-          .then(updated => {
-            console.log('Post updated:', updated);
-            location.reload(); // refresh the view
-          });
-        }
-      });
-
-    form.reset();
-    form.style.display = 'none';
-    showFormBtn.style.display = 'inline-block';
-    form.onsubmit = oldSubmit; // restore the original submit behavior
+  editBtn.onclick = () => {
+    titleInput.value = post.title;
+    authorInput.value = post.author;
+    imageUrlInput.value = post.imageUrl;
+    contentInput.value = post.content;
+    isEditing = true;
+    editingPostId = post.id;
+    form.style.display = 'block';
+    showFormBtn.style.display = 'none';
   };
-  });
 
-  deleteBtn.addEventListener('click', function () {
-  fetch(`${url}?title=${encodeURIComponent(title)}`)
-    .then(res => res.json())
-    .then(posts => {
-      const post = posts[0];
-      if (post) {
-        fetch(`${url}/${post.id}`, {
-          method: 'DELETE'
-        })
-        .then(() => {
-          console.log('Post deleted');
-          location.reload();
-        });
-      }
-    });
-});
+  deleteBtn.onclick = () => {
+    fetch(`${url}/${post.id}`, { method: 'DELETE' }).then(() => location.reload());
+  };
 
-
+  container3.append(title, author, image, content, editBtn, deleteBtn);
 }
 
+// === Layout Assembly ===
+const majorContainer = document.createElement('div');
+majorContainer.className = 'major-container';
+majorContainer.append(container1, container2);
 
-majorContainer.appendChild(container1);
-majorContainer.appendChild(container2);
+const main = document.createElement('main');
+main.className = 'main-content';
+main.append(majorContainer, container3);
+document.body.appendChild(main);
 
-
-document.body.appendChild(majorContainer);
-document.body.appendChild(container3);
-
-// Fetch and render existing posts from the backend
+// === Fetch and Render Posts ===
 fetch(url)
   .then(res => res.json())
   .then(posts => {
-    posts.forEach((post, index) => {
-      let listItem = document.createElement('li');
-      listItem.className = 'blog-post';
+    posts.forEach(post => {
+      const item = document.createElement('li');
+      item.className = 'blog-post';
 
-      let postTitle = document.createElement('h3');
-      postTitle.textContent = post.title;
+      const title = document.createElement('h3');
+      title.textContent = post.title;
 
-      let postAuthor = document.createElement('small');
-      postAuthor.textContent = 'By ' + post.author;
+      const author = document.createElement('small');
+      author.textContent = 'By ' + post.author;
 
-      let postCard = document.createElement('div');
-      postCard.className = 'clickable-post';
-      postCard.append(postTitle, postAuthor);
-      listItem.appendChild(postCard);
+      const clickable = document.createElement('div');
+      clickable.className = 'clickable-post';
+      clickable.append(title, author);
+      clickable.onclick = () => displayPostInContainer3(post);
 
-      postCard.addEventListener('click', function () {
-        displayPostInContainer3(post.title, post.author, post.imageUrl, post.content);
-      });
-
-      list.appendChild(listItem);
+      item.appendChild(clickable);
+      list.appendChild(item);
     });
-  })
-  .catch(error => {
-    console.error("Error fetching posts:", error);
   });
-

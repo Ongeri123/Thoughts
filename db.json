@@ -1,21 +1,36 @@
 {
   "Posts": [
     {
-      "id":1,
-      "title": "Music",
-      "author": "Newton",
-      "imageUrl": "https://i.pinimg.com/736x/fc/74/f6/fc74f67b644ab5cdffc5cce7e67f99a7.jpg",
-      "content": "Music is medicine",
-      "date": "2025-06-27",
-      "id": 1
-    },
-    {
-      "title": "Sports",
+      "title": "Football",
       "author": "Newton",
       "imageUrl": "https://i.pinimg.com/736x/39/4a/85/394a8514c21be4c0fc80e3d2a9879019.jpg",
       "content": "Sports is good for someone who needs to achieve good body posture",
       "date": "2025-06-27",
       "id": 2
+    },
+    {
+      "title": "Man in Mars",
+      "author": "Ongeri",
+      "imageUrl": "https://i.pinimg.com/736x/52/97/0e/52970e99bc23918f2e458a589deb65d3.jpg",
+      "content": "Man is a smart creature; deciding to move to another planet for habitat is not a joke, right?",
+      "date": "2025-06-27",
+      "id": 1751042461673
+    },
+    {
+      "title": "Music",
+      "author": "Ongeri",
+      "imageUrl": "https://i.pinimg.com/736x/5b/66/7d/5b667d6883f9b115dcd8874f34756299.jpg",
+      "content": "An art born to soothe the sorrowful, thrill the cheerful, and stir the still-hearted.",
+      "date": "2025-06-27",
+      "id": 1751042469678
+    },
+    {
+      "title": "Flying Friends",
+      "author": "Ongeri",
+      "imageUrl": "https://i.pinimg.com/736x/8f/ec/63/8fec63dc6a6f30affcd546cf4113bd26.jpg",
+      "content": "Angels above are our friends who can't talk but keep watch over us.",
+      "date": "2025-06-27",
+      "id": 1751042478499
     }
   ]
 }
