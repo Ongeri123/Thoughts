@@ -1,13 +1,37 @@
-
 const url = "http://localhost:3000/Posts";
 
-// creating a top header
 const topHeader = document.createElement('header');
 topHeader.className = 'site-header';
-topHeader.innerHTML = '<h1>Thoughts</h1>';
+
+const headerContent = document.createElement('div');
+headerContent.className = 'header-content';
+
+const title = document.createElement('h1');
+title.textContent = 'Thoughts';
+
+const themeToggle = document.createElement('div');
+themeToggle.className = 'theme-toggle';
+themeToggle.title = 'Toggle theme';
+
+const toggleSlider = document.createElement('div');
+toggleSlider.className = 'toggle-slider';
+
+themeToggle.appendChild(toggleSlider);
+headerContent.append(title, themeToggle);
+topHeader.appendChild(headerContent);
 document.body.prepend(topHeader);
 
-// Blog Post List 
+themeToggle.onclick = () => {
+  document.body.classList.toggle('dark-theme');
+  themeToggle.classList.toggle('active');
+  localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+};
+
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark-theme');
+  themeToggle.classList.add('active');
+}
+
 const container1 = document.createElement('div');
 container1.className = 'blog-container1';
 
@@ -19,7 +43,6 @@ heading1.textContent = 'Blog Post';
 list.appendChild(heading1);
 container1.appendChild(list);
 
-// New Post Form 
 const container2 = document.createElement('div');
 container2.className = 'new-post-container';
 
@@ -70,7 +93,6 @@ form.append(formContainer, submitBtn, cancelBtn);
 container2.appendChild(form);
 form.style.display = 'none';
 
-//  Form Interactivity 
 let isEditing = false;
 let editingPostId = null;
 
@@ -111,10 +133,8 @@ form.onsubmit = (e) => {
       body: JSON.stringify({ ...postData, id: Date.now() })
     }).then(() => location.reload());
   }
-
 };
 
-// Post Pulse Section 
 const container3 = document.createElement('div');
 container3.className = 'pulse-tab';
 
@@ -166,7 +186,6 @@ function displayPostInContainer3(post) {
   container3.append(title, author, image, content, editBtn, deleteBtn);
 }
 
-// having main div to append the content and easy for layout assembling 
 const majorContainer = document.createElement('div');
 majorContainer.className = 'major-container';
 majorContainer.append(container1, container2);
@@ -176,7 +195,6 @@ main.className = 'main-content';
 main.append(majorContainer, container3);
 document.body.appendChild(main);
 
-// Fetch and Render Posts 
 fetch(url)
   .then(res => res.json())
   .then(posts => {
@@ -184,15 +202,25 @@ fetch(url)
       const item = document.createElement('li');
       item.className = 'blog-post';
 
+      const thumbnail = document.createElement('img');
+      thumbnail.src = post.imageUrl;
+      thumbnail.alt = post.title;
+      thumbnail.className = 'post-thumbnail';
+
+      const textContent = document.createElement('div');
+      textContent.className = 'post-text';
+
       const title = document.createElement('h3');
       title.textContent = post.title;
 
       const author = document.createElement('small');
       author.textContent = 'By ' + post.author;
 
+      textContent.append(title, author);
+
       const clickable = document.createElement('div');
       clickable.className = 'clickable-post';
-      clickable.append(title, author);
+      clickable.append(thumbnail, textContent);
       clickable.onclick = () => displayPostInContainer3(post);
 
       item.appendChild(clickable);
