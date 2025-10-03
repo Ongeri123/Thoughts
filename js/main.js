@@ -39,8 +39,8 @@ authorInput.placeholder = 'Author Name';
 authorInput.required = true;
 
 const imageUrlInput = document.createElement('input');
-imageUrlInput.placeholder = 'Image URL';
-imageUrlInput.required = true;
+imageUrlInput.placeholder = 'Image URL (optional - will auto-fetch if empty)';
+imageUrlInput.required = false;
 
 const contentInput = document.createElement('textarea');
 contentInput.placeholder = 'Write your blog post here...';
@@ -77,16 +77,35 @@ cancelBtn.onclick = () => {
   editingPostId = null;
 };
 
-form.onsubmit = (e) => {
+form.onsubmit = async (e) => {
   e.preventDefault();
+  
+  const title = titleInput.value.trim();
+  const author = authorInput.value.trim();
+  const content = contentInput.value.trim();
+  let imageUrl = imageUrlInput.value.trim();
+  
+  if (!title || !author || !content) return;
+  
+  // Process image URL or auto-fetch if empty
+  if (!imageUrl) {
+    submitBtn.textContent = 'Fetching Image...';
+    submitBtn.disabled = true;
+    imageUrl = await autoFetchImage(title);
+  } else {
+    // Convert Pixabay page URLs to direct image URLs
+    submitBtn.textContent = 'Processing Image...';
+    submitBtn.disabled = true;
+    imageUrl = await processImageUrl(imageUrl);
+  }
+  
   const postData = {
-    title: titleInput.value.trim(),
-    author: authorInput.value.trim(),
-    imageUrl: imageUrlInput.value.trim(),
-    content: contentInput.value.trim(),
+    title,
+    author,
+    imageUrl,
+    content,
     date: new Date().toISOString().split('T')[0]
   };
-  if (!postData.title || !postData.author || !postData.imageUrl || !postData.content) return;
 
   if (isEditing && editingPostId) {
     fetch(`${url}/${editingPostId}`, {
@@ -101,6 +120,9 @@ form.onsubmit = (e) => {
       body: JSON.stringify({ ...postData, id: Date.now() })
     }).then(() => location.reload());
   }
+  
+  submitBtn.textContent = '+ Add Post';
+  submitBtn.disabled = false;
 };
 
 const container3 = document.createElement('div');
