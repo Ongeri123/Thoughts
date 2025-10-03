@@ -1,5 +1,42 @@
 const url = "http://localhost:3000/Posts";
 
+// Pixabay API Configuration
+const PIXABAY_API_KEY = '51597260-f498f3524ac6f485a9ca6ef62'; // Replace with your actual API key
+const PIXABAY_URL = 'https://pixabay.com/api/';
+
+// Fetch image from Pixabay based on search query
+async function fetchPixabayImage(query) {
+  try {
+    const response = await fetch(`${PIXABAY_URL}?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=10&safesearch=true&min_width=400`);
+    const data = await response.json();
+    
+    if (data.hits && data.hits.length > 0) {
+      // Return the first suitable image
+      return data.hits[0].webformatURL;
+    }
+    
+    // Fallback image if no results
+    return 'https://via.placeholder.com/400x300?text=No+Image+Found';
+  } catch (error) {
+    console.error('Error fetching Pixabay image:', error);
+    // Fallback image on error
+    return 'https://via.placeholder.com/400x300?text=Image+Error';
+  }
+}
+
+// Generate search query from post title
+function generateImageQuery(title) {
+  // Extract meaningful keywords from title
+  const keywords = title.toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '') // Remove special characters
+    .split(' ')
+    .filter(word => word.length > 2) // Filter short words
+    .slice(0, 3) // Take first 3 keywords
+    .join(' ');
+  
+  return keywords || 'nature'; // Default to 'nature' if no keywords
+}
+
 const ICONS = {
   share: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>',
   facebook: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#1877f2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
@@ -19,4 +56,47 @@ function createButton(text, className, onclick) {
   const btn = createElement('button', className, text);
   if (onclick) btn.onclick = onclick;
   return btn;
+}
+
+// Convert Pixabay page URL to direct image URL
+async function convertPixabayUrl(pixabayUrl) {
+  try {
+    // Extract image ID from Pixabay URL
+    const match = pixabayUrl.match(/-(\d+)\/?$/);
+    if (!match) return null;
+    
+    const imageId = match[1];
+    
+    // Fetch image details using Pixabay API
+    const response = await fetch(`${PIXABAY_URL}?key=${PIXABAY_API_KEY}&id=${imageId}`);
+    const data = await response.json();
+    
+    if (data.hits && data.hits.length > 0) {
+      return data.hits[0].webformatURL;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error converting Pixabay URL:', error);
+    return null;
+  }
+}
+
+// Auto-fetch image for new posts
+async function autoFetchImage(title) {
+  const query = generateImageQuery(title);
+  return await fetchPixabayImage(query);
+}
+
+// Process image URL (convert Pixabay URLs or use as-is)
+async function processImageUrl(imageUrl) {
+  if (!imageUrl) return null;
+  
+  // Check if it's a Pixabay page URL
+  if (imageUrl.includes('pixabay.com/photos/')) {
+    const directUrl = await convertPixabayUrl(imageUrl);
+    return directUrl || imageUrl; // Return converted URL or original if conversion fails
+  }
+  
+  return imageUrl; // Return as-is for other URLs
 }
